@@ -21,5 +21,6 @@ nomad-service:
   service.running:
     - name: nomad
     # Restart service if config changes
-    - restart: True
     - enable: {{ nomad.service }}
+    - watch:
+        - file: nomad-install-service

@@ -131,6 +131,7 @@ nomad-install-binary:
     - unless:
       - '{{ nomad.bin_dir }}/nomad -v && {{ nomad.bin_dir }}/nomad -v | grep {{ nomad.version }}'
 
+{% if nomad.service %}
 nomad-install-service:
   file.managed:
     - name: /etc/systemd/system/nomad.service
@@ -142,6 +143,15 @@ nomad-install-service:
     - name: service.systemctl_reload
     - onchanges:
       - file: nomad-install-service
+{% else %}
+nomad-uninstall-service:
+  file.absent:
+    - name: /etc/systemd/system/nomad.service
+  module.run:
+    - name: service.systemctl_reload
+    - onchanges:
+      - file: nomad-uninstall-service
+{% endif %}
 {% endif %}
 
 
